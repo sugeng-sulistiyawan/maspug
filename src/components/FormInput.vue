@@ -173,7 +173,6 @@ export default {
     },
     logout: function () {
       localStorage.removeItem('storedData');
-      // this.form.username = '';
       this.form.password = '';
       this.checkForm();
 
