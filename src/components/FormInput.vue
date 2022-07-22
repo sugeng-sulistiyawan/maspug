@@ -25,10 +25,10 @@
         <div
           class="alert mt-3"
           role="alert"
-          v-if="form.alert.show"
-          :class="form.alert.class"
+          v-if="alert.show"
+          :class="alert.class"
         >
-          {{ form.alert.message }}
+          {{ alert.message }}
         </div>
       </div>
     </div>
@@ -73,8 +73,6 @@
 <script>
 import user from './../databases/user.json';
 
-const md5 = var md5 = require("md5");
-
 export default {
   name: 'FormInput',
   data() {
@@ -83,11 +81,11 @@ export default {
       form: {
         username: '',
         password: '',
-        alert: {
-          show: false,
-          class: 'alert-secondary',
-          message: '',
-        },
+      },
+      alert: {
+        show: false,
+        class: 'alert-secondary',
+        message: '',
       },
       content: {
         show: false,
@@ -103,27 +101,55 @@ export default {
   },
   methods: {
     checkForm: function () {
-      let u = this.form.username;
-      let p = this.form.password;
-      if (u && p) {
-        let user = this.getUser(u, p);
+      let md5 = require('md5');
 
-        console.log(user);
+      let u = this.form.username;
+      let p = this.form.password ? md5(this.form.password) : '';
+
+      let user = null;
+
+      if (u && p) {
+        user = this.getUser(u, p);
+      }
+      if (user === null) {
+        this.alert.show = true;
+        this.content.show = false;
+
+        if (u && p) {
+          this.alert.class = 'alert-danger';
+          this.alert.message =
+            'Kombinasi Username dan Password salah. Mohon teliti kembali.';
+        } else if (u || p) {
+          this.alert.class = 'alert-info';
+          this.alert.message =
+            'Mohon masukkan Username & Password yang sesuai.';
+        } else {
+          this.alert.show = false;
+        }
+      } else {
+        this.alert.show = false;
+        this.content.show = true;
+
+        this.content.name = user[1];
+        this.content.grade = user[2];
+        this.content.present = user[0];
+
+        this.content.embed.show = false;
+        if (user[3]) {
+          this.content.embed.show = true;
+          this.content.embed.url = user[3];
+        }
       }
 
-      return false;
+      return user !== null;
     },
-    getUser: function (username, password) {
+    getUser: function (u, p) {
       let user = null;
-      let key = u + '|' + md5(p);
+      let key = u + '|' + p;
       if (typeof this.user[key] !== 'undefined') {
         user = this.user[key];
       }
-      console.log(key);
       return user;
-    },
-    getContent: function (key) {
-      return true;
     },
   },
 };
