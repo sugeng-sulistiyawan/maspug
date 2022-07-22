@@ -76,6 +76,9 @@
 <script>
 import user from './../databases/user.json';
 
+var md5 = require('md5');
+var CryptoJS = require('crypto-js');
+
 export default {
   name: 'FormInput',
   data() {
@@ -110,8 +113,6 @@ export default {
   },
   methods: {
     checkForm: function () {
-      let md5 = require('md5');
-
       let u = this.form.username;
       let p = this.form.password ? md5(this.form.password) : '';
 
@@ -154,13 +155,20 @@ export default {
       return user !== null;
     },
     getUser: function (u, p) {
-      let user = localStorage.getItem('storedData')
-        ? JSON.parse(localStorage.getItem('storedData'))
+      let storeData = localStorage.getItem('storedData')
+        ? CryptoJS.AES.decrypt(
+            localStorage.getItem('storedData'),
+            ',.he7l0,.'
+          ).toString(CryptoJS.enc.Utf8)
         : null;
+      let user = storeData ? JSON.parse(storeData) : null;
       let key = u + '|' + p;
       if (typeof this.user[key] !== 'undefined' && user === null) {
         user = this.user[key];
-        localStorage.setItem('storedData', JSON.stringify(user));
+        localStorage.setItem(
+          'storedData',
+          CryptoJS.AES.encrypt(JSON.stringify(user), ',.he7l0,.').toString()
+        );
       }
       this.checkLogin();
 
