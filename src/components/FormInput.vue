@@ -1,7 +1,7 @@
 <template>
   <form>
     <div class="row">
-      <div class="col">
+      <div class="mb-2" :class="block.input.col">
         <input
           type="text"
           class="form-control"
@@ -11,7 +11,7 @@
           @input="checkForm()"
         />
       </div>
-      <div class="col">
+      <div class="mb-2" :class="block.input.col">
         <input
           type="password"
           class="form-control"
@@ -23,7 +23,7 @@
       </div>
       <div class="col-12">
         <div
-          class="alert mt-3"
+          class="alert mt-2"
           role="alert"
           v-if="alert.show"
           :class="alert.class"
@@ -41,12 +41,12 @@
         <div class="row">
           <div class="col-12">
             <dl class="row">
-              <dt class="col-4">Nama Lengkap</dt>
-              <dd class="col-8">{{ content.name }}</dd>
-              <dt class="col-4">Kelas</dt>
-              <dd class="col-8">{{ content.grade }}</dd>
-              <dt class="col-4">No. Presensi</dt>
-              <dd class="col-8">{{ content.present }}</dd>
+              <dt class="col-12 col-md-4">Nama Lengkap</dt>
+              <dd class="col-12 col-md-8">{{ content.name }}</dd>
+              <dt class="col-12 col-md-4">Kelas</dt>
+              <dd class="col-12 col-md-8">{{ content.grade }}</dd>
+              <dt class="col-12 col-md-4">No. Presensi</dt>
+              <dd class="col-12 col-md-8">{{ content.present }}</dd>
             </dl>
           </div>
         </div>
@@ -97,6 +97,11 @@ export default {
           url: '',
         },
       },
+      block: {
+        input: {
+          col: 'col-12 col-md-12',
+        },
+      },
     };
   },
   methods: {
@@ -139,6 +144,10 @@ export default {
           this.content.embed.show = true;
           this.content.embed.url = user[3];
         }
+      }
+
+      if (this.content.show) {
+        this.block.input.col = 'col-6 col-md-6';
       }
 
       return user !== null;
