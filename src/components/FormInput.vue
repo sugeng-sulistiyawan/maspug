@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form v-if="!checkLogin() && !isLogin">
     <div class="row">
       <div class="mb-2" :class="block.input.col">
         <input
@@ -35,7 +35,6 @@
   </form>
 
   <div class="mt-0" v-if="content.show">
-    <hr />
     <div class="card">
       <div class="card-body">
         <div class="row">
@@ -51,7 +50,11 @@
           </div>
         </div>
 
-        <div class="mt-2" v-if="content.embed.show">
+        <div class="mb-2" v-if="checkLogin() || isLogin">
+          <button class="btn btn-primary" @click="logout()">Logout</button>
+        </div>
+
+        <div class="mt-4" v-if="content.embed.show">
           <iframe
             :src="content.embed.url"
             frameborder="0"
@@ -78,6 +81,7 @@ export default {
   data() {
     return {
       user: user,
+      isLogin: false,
       form: {
         username: '',
         password: '',
@@ -111,11 +115,8 @@ export default {
       let u = this.form.username;
       let p = this.form.password ? md5(this.form.password) : '';
 
-      let user = null;
+      let user = this.getUser(u, p);
 
-      if (u && p) {
-        user = this.getUser(u, p);
-      }
       if (user === null) {
         this.alert.show = true;
         this.content.show = false;
@@ -153,13 +154,34 @@ export default {
       return user !== null;
     },
     getUser: function (u, p) {
-      let user = null;
+      let user = localStorage.getItem('storedData')
+        ? JSON.parse(localStorage.getItem('storedData'))
+        : null;
       let key = u + '|' + p;
-      if (typeof this.user[key] !== 'undefined') {
+      if (typeof this.user[key] !== 'undefined' && user === null) {
         user = this.user[key];
+        localStorage.setItem('storedData', JSON.stringify(user));
       }
+      this.checkLogin();
+
       return user;
     },
+    checkLogin: function () {
+      this.isLogin = localStorage.getItem('storedData') !== null;
+
+      return this.isLogin;
+    },
+    logout: function () {
+      localStorage.removeItem('storedData');
+      // this.form.username = '';
+      this.form.password = '';
+      this.checkForm();
+
+      return true;
+    },
+  },
+  beforeMount() {
+    this.checkForm();
   },
 };
 </script>
