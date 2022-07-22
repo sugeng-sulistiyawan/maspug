@@ -73,6 +73,8 @@
 <script>
 import user from './../databases/user.json';
 
+const md5 = var md5 = require("md5");
+
 export default {
   name: 'FormInput',
   data() {
@@ -101,8 +103,10 @@ export default {
   },
   methods: {
     checkForm: function () {
-      if (this.form.username && this.form.password) {
-        let user = this.getUser(this.form.username, this.form.password);
+      let u = this.form.username;
+      let p = this.form.password;
+      if (u && p) {
+        let user = this.getUser(u, p);
 
         console.log(user);
       }
@@ -111,11 +115,11 @@ export default {
     },
     getUser: function (username, password) {
       let user = null;
-      let key = username + '|' + password;
+      let key = u + '|' + md5(p);
       if (typeof this.user[key] !== 'undefined') {
         user = this.user[key];
       }
-      consolo.log(key);
+      console.log(key);
       return user;
     },
     getContent: function (key) {
