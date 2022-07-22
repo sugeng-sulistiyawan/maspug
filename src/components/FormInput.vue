@@ -8,6 +8,7 @@
           placeholder="Username"
           aria-label="Username"
           v-model="form.username"
+          @input="checkForm()"
         />
       </div>
       <div class="col">
@@ -17,6 +18,7 @@
           placeholder="Password"
           aria-label="Password"
           v-model="form.password"
+          @input="checkForm()"
         />
       </div>
       <div class="col-12">
@@ -42,7 +44,7 @@
               <dt class="col-4">Nama Lengkap</dt>
               <dd class="col-8">{{ content.name }}</dd>
               <dt class="col-4">Kelas</dt>
-              <dd class="col-8">{{ content.class }}</dd>
+              <dd class="col-8">{{ content.grade }}</dd>
               <dt class="col-4">No. Presensi</dt>
               <dd class="col-8">{{ content.present }}</dd>
             </dl>
@@ -51,7 +53,7 @@
 
         <div class="mt-2" v-if="content.embed.show">
           <iframe
-            src="{{ content.embed.url }}"
+            :src="content.embed.url"
             frameborder="0"
             marginwidth="0"
             marginheight="0"
@@ -69,30 +71,56 @@
 </template>
 
 <script>
+import user from './../databases/user.json';
+
 export default {
   name: 'FormInput',
   data() {
     return {
+      user: user,
       form: {
         username: '',
         password: '',
         alert: {
-          show: true,
-          class: 'alert-info',
-          message: 'aaaaaaaa',
+          show: false,
+          class: 'alert-secondary',
+          message: '',
         },
       },
       content: {
-        show: true,
+        show: false,
         name: '',
-        class: '',
+        grade: '',
         present: '',
         embed: {
-          show: true,
-          url: 'https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__r4G1WFUMlRWTksyR1hTUFpKNkpMRlo4RU8zQkxPNS4u&embed=true',
+          show: false,
+          url: '',
         },
       },
     };
+  },
+  methods: {
+    checkForm: function () {
+      if (this.form.username && this.form.password) {
+        let user = this.getUser(this.form.username, this.form.password);
+
+        console.log(user);
+      }
+
+      return false;
+    },
+    getUser: function (username, password) {
+      let user = null;
+      let key = username + '|' + password;
+      if (typeof this.user[key] !== 'undefined') {
+        user = this.user[key];
+      }
+      consolo.log(key);
+      return user;
+    },
+    getContent: function (key) {
+      return true;
+    },
   },
 };
 </script>
