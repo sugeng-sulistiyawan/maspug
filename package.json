@@ -1,5 +1,5 @@
 {
-  "name": "sb-vue",
+  "name": "sugengsulistiyawan-maspug",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.5",
+    "bootstrap": "^5.2.0",
     "vue": "^3.2.26"
   },
   "devDependencies": {
