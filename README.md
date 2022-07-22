@@ -1,3 +1,3 @@
 # maspug
 
-[Edit on StackBlitz ⚡️](https://stackblitz.com/edit/maspug)
+[StackBlitz ⚡️](https://maspug.stackblitz.io/)
